@@ -33,3 +33,7 @@ st.subheader('Analysis via topics')
 
 
 st.subheader('Student performance')
+from assesly import fig
+st.plotly_chart(fig)
+
+#TO DO: BRING THE FIGURE IN THE JUPYTER NOTEBOOK FILE TO STREAMLIT
