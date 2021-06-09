@@ -20,36 +20,21 @@ from sklearn.preprocessing import StandardScaler
 
 # import data from xlsx to dataframe
 
+'''
 student_result_maths = pd.read_excel (r'/content/StudentResult_Mathematics.xlsx')
 student_result_science = pd.read_excel (r'/content/StudentResult_Science.xlsx')
 student_result_sejarah = pd.read_excel (r'/content/StudentResult_Sejarah.xlsx')
+'''
 
-student_result_maths
 
-"""# Clustering"""
+student_result_maths = pd.read_excel (r'content\StudentResult_Mathematics.xlsx')
+student_result_science = pd.read_excel (r'content\StudentResult_Science.xlsx')
+student_result_sejarah = pd.read_excel (r'content\StudentResult_Sejarah.xlsx')
 
-# get column for clustering
-data = student_result_maths[['Quiz','Final']]
+"""# Clustering
 
-# apply standard scalar on data
-ss = StandardScaler()
-X = ss.fit_transform(data)
-
-#fit data into model
-model = KMeans(n_clusters=4, verbose=0)
-result = model.fit_predict(X)
-
-#get the label
-student_result_maths['Performance Group'] = result.tolist()
-student_result_maths['Performance Group'] = student_result_maths['Performance Group'].apply(str)
-student_result_maths['Performance Group'].replace({"0": "A", "1": "B", "2": "C", "3": "D"}, inplace=True)
-
-fig = px.scatter(student_result_maths, x="Quiz", y="Final",color="Performance Group", hover_data=['Student Name','Quiz'])
-fig.update_traces(marker={'size': 10})    
-
-fig.show()
-
-"""## Clustering function"""
+## Clustering function
+"""
 
 def getClustering(df,c1,c2):
   # get column for clustering
@@ -69,10 +54,11 @@ def getClustering(df,c1,c2):
   df['Performance Group'].replace({"0": "A", "1": "B", "2": "C", "3": "D"}, inplace=True)
 
   #display
-  fig = px.scatter(df, x=c1, y=c2,color="Performance Group", hover_data=['Student Name',c1])
-  fig.update_traces(marker={'size': 10})    
+  figClustering = px.scatter(df, x=c1, y=c2,color="Performance Group", hover_data=['Student Name',c1])
+  figClustering.update_traces(marker={'size': 10})    
 
-  fig.show()
+  figClustering.show()
+
 
 #testing pass data
 dataset = student_result_sejarah #@param [student_result_sejarah, student_result_science, student_result_maths] {type:"raw"}
@@ -83,3 +69,24 @@ feature2 = 'Final' #@param ["E1", "E2", "E3", "Final", "Quiz", "Attendance"]
 
 # call function
 getClustering(dataset,feature1,feature2)
+
+"""# Recommendation"""
+
+name = "AFIQ SYAMIL"
+
+
+def showStudentPerformance(name):
+  studentData = student_result_maths.loc[student_result_maths['Student Name']==name]
+
+  x = ['E1', 'E2', 'E3','Final']
+  y = studentData.iloc[:,2:6].values.ravel()
+
+  figStudentPerformance = px.bar(x=x, y=y)
+  figStudentPerformance.update_traces(marker_color="#9467BD")
+  return figStudentPerformance
+
+x = showStudentPerformance(name)
+#x.show()
+
+"""# Overall"""
+

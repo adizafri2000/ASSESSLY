@@ -9,6 +9,7 @@ st.title('ASSESSLY Analysis')
 
 FINAL_COLUMN = 'Final'
 DATA_FILE = ('Book1.xlsx')
+NAME_COLUMN = 'Student Name'
 
 @st.cache
 def load_data(sheet_selection):
@@ -29,11 +30,12 @@ st.subheader('Data for subject: '+sheet_selection)
 st.subheader('Raw data')
 st.write(data)
 
-st.subheader('Analysis via topics')
+st.subheader('Analysis per Individual Student')
 
-
-st.subheader('Student performance')
-from assesly import fig
-st.plotly_chart(fig)
+student_list = pd.read_excel(DATA_FILE,sheet_selection)[NAME_COLUMN]
+student_selection = st.selectbox('Student name',student_list)
+st.subheader(student_selection + '\'s performance')
+from assesly import *
+st.plotly_chart(showStudentPerformance(student_selection))
 
 #TO DO: BRING THE FIGURE IN THE JUPYTER NOTEBOOK FILE TO STREAMLIT
