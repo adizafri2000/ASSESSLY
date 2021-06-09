@@ -20,11 +20,9 @@ from sklearn.preprocessing import StandardScaler
 
 # import data from xlsx to dataframe
 
-'''
-student_result_maths = pd.read_excel (r'/content/StudentResult_Mathematics.xlsx')
-student_result_science = pd.read_excel (r'/content/StudentResult_Science.xlsx')
-student_result_sejarah = pd.read_excel (r'/content/StudentResult_Sejarah.xlsx')
-'''
+#student_result_maths = pd.read_excel (r'/content/StudentResult_Mathematics.xlsx')
+#student_result_science = pd.read_excel (r'/content/StudentResult_Science.xlsx')
+#student_result_sejarah = pd.read_excel (r'/content/StudentResult_Sejarah.xlsx')
 
 
 student_result_maths = pd.read_excel (r'content\StudentResult_Mathematics.xlsx')
@@ -36,6 +34,11 @@ student_result_sejarah = pd.read_excel (r'content\StudentResult_Sejarah.xlsx')
 ## Clustering function
 """
 
+'''
+df = subject excel file (dataframe)
+c1 = test selection 1
+c2 = test selection 2
+'''
 def getClustering(df,c1,c2):
   # get column for clustering
   data = df[[c1,c2]]
@@ -57,23 +60,9 @@ def getClustering(df,c1,c2):
   figClustering = px.scatter(df, x=c1, y=c2,color="Performance Group", hover_data=['Student Name',c1])
   figClustering.update_traces(marker={'size': 10})    
 
-  figClustering.show()
+  return figClustering
 
-
-#testing pass data
-dataset = student_result_sejarah #@param [student_result_sejarah, student_result_science, student_result_maths] {type:"raw"}
-
-
-feature1 = 'E3' #@param ["E1", "E2", "E3", "Final", "Quiz", "Attendance"]
-feature2 = 'Final' #@param ["E1", "E2", "E3", "Final", "Quiz", "Attendance"]
-
-# call function
-getClustering(dataset,feature1,feature2)
-
-"""# Recommendation"""
-
-name = "AFIQ SYAMIL"
-
+"""# student performance individual"""
 
 def showStudentPerformance(name):
   studentData = student_result_maths.loc[student_result_maths['Student Name']==name]
@@ -85,8 +74,8 @@ def showStudentPerformance(name):
   figStudentPerformance.update_traces(marker_color="#9467BD")
   return figStudentPerformance
 
-x = showStudentPerformance(name)
-#x.show()
-
 """# Overall"""
 
+def Overallperformance(subject, test):
+  figOverall = px.box(subject, y=test, points="all", hover_data=["Student Name"], title=test + " TEST RESULT")
+  return figOverall
