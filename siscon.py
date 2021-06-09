@@ -3,13 +3,14 @@ import pandas as pd
 import numpy as np
 import openpyxl as pyxl
 
-#RE-OPEN TERMINAL BY: CTRL + `
+#RE-OPEN TERMINAL IN VSCODE BY: CTRL + ` 
 
 st.title('ASSESSLY Analysis')
 
 FINAL_COLUMN = 'Final'
 DATA_FILE = ('Book1.xlsx')
 
+@st.cache
 def load_data(sheet_selection):
     data = pd.read_excel(DATA_FILE, sheet_name=sheet_selection)
     lowercase = lambda x: str(x).lower()
@@ -25,4 +26,10 @@ data = load_data(sheet_selection)
 data_load_state.text("Done!")
 
 st.subheader('Data for subject: '+sheet_selection)
+st.subheader('Raw data')
 st.write(data)
+
+st.subheader('Analysis via topics')
+
+
+st.subheader('Student performance')
