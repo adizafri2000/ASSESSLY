@@ -6,4 +6,4 @@ rem Install requirements to virtual environment
 python -m pip install -r requirements.txt
 
 rem Run the streamlit website
-streamlit run siscon.py
+streamlit run main.py
