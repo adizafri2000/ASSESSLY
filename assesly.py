@@ -69,9 +69,12 @@ def showStudentPerformance(name):
 
   x = ['E1', 'E2', 'E3','Final']
   y = studentData.iloc[:,2:6].values.ravel()
+  hoverLabel = []
+  for index,i in enumerate(x):
+    hoverLabel.append(i+" Marks = "+str(y[index]))
 
-  figStudentPerformance = px.bar(x=x, y=y)
-  figStudentPerformance.update_traces(marker_color="#9467BD")
+  figStudentPerformance = px.bar(x=x, y=y, labels=dict(x="Test Type", y="Marks"))
+  figStudentPerformance.update_traces(marker_color="#9467BD", hovertemplate=hoverLabel)
   return figStudentPerformance
 
 """# Overall"""
