@@ -3,6 +3,7 @@ python -m venv virtualenv
 CALL virtualenv\Scripts\activate
 
 rem Install requirements to virtual environment
+python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
 
 rem Run the streamlit website
