@@ -64,8 +64,8 @@ def getClustering(df,c1,c2):
 
 """# student performance individual"""
 
-def showStudentPerformance(name):
-  studentData = student_result_maths.loc[student_result_maths['Student Name']==name]
+def showStudentPerformance(subject, name):
+  studentData = subject.loc[subject['Student Name']==name]
 
   x = ['E1', 'E2', 'E3','Final']
   y = studentData.iloc[:,2:6].values.ravel()

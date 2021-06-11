@@ -9,7 +9,7 @@ from assesly import *
 
 st.title('ASSESSLY Analysis')
 
-DATA_FILE = 'Book1.xlsx'
+#DATA_FILE = 'Book1.xlsx'
 NAME_COLUMN = 'Student Name'
 subject_dictionary = {
     'Mathematics' : student_result_maths,
@@ -17,7 +17,7 @@ subject_dictionary = {
     'Sejarah': student_result_sejarah 
 }
 EXPECTED_FILE_HEADERS = ['Student Name','Class','E1','E2','E3','Final','Quiz','Attendance']
-TEST_LIST = ['E1','E2','E3','Final','Quiz']
+TEST_LIST = ['E1','E2','E3','Final','Quiz','Attendance']
 PAGE_SECTIONS = [
     'Extracted raw data',
     'Student Performance on Test vs Test Comparison',
@@ -25,6 +25,7 @@ PAGE_SECTIONS = [
     'Overall Student Performance for Subject Tests',
     'Performance by Class'
 ]
+subject_name = ''
 
 #Counter for streamlit selectbox widget to assign its unique key to avoid DuplicateWidgetID error
 selectbox_count = 0
@@ -35,12 +36,14 @@ def section_gap():
 
 # To add a line break between sections in webpage
 def section_separator():
+    section_gap()
     st.write('---')
+    section_gap()
     
 #@st.cache
-def load_data(sheet_selection):
+def load_data(file_selection):
     with st.spinner('Loading data ...'):
-        data = pd.read_excel(DATA_FILE, sheet_name=sheet_selection)
+        data = pd.read_excel(file_selection)
         return data
 
 # Validates the .xlsx file by checking the header format - 
@@ -64,72 +67,79 @@ def add_sidebar():
         sb.write('***['+PAGE_SECTIONS[i]+'](#'+anchor_link+')***')
     return sb
 
-add_sidebar()
+
 
 # XLSX FILE UPLOAD SECTION : UNDER CONSTRUCTION AND CONSIDERATION !!
 st.subheader('Data file upload')
 st.info(
     'ASSESSLY currently only supports files in **.xlsx format** and **must contain these header columns**: '+
-    '*Student Name, Class, E1, E2, E3, Final, Quiz, Attendance*'
+    '*Student Name, Class, E1, E2, E3, Final, Quiz, Attendance*. If there are multiple sheets in the .xlsx file, only the '+
+    '***first sheet will be analysed***.'
 )
 uploaded_file = st.file_uploader("Choose your student data file:",type='xlsx')
+file_accepted = False
 if uploaded_file is not None:
     if file_validator(uploaded_file):
         st.success('File is valid! Sheesh!')
+        file_accepted = True
+        uploaded_file = load_data(uploaded_file)
     else:
         st.error('File invalid. Make sure column header names are follow expected format')
 
-section_separator()
+if file_accepted:
 
-#DATA LOAD FOR SUBJECT SECTION
-sheet_selection = st.selectbox('Select a subject for an analysis view:',('Mathematics','Science','Sejarah'),key=selectbox_unique_key())
-data = load_data(sheet_selection)
+    #SUBJECT NAME INPUT
+    subject_name = st.text_input('Enter name of subject')
 
-section_gap()
+    section_separator()
 
-#RAW XLSX FILE
-st.header('Data for subject: '+sheet_selection)
-st.subheader(PAGE_SECTIONS[0])
-st.write(data)
+    if subject_name != '' and len(subject_name.split())!=0:
+        add_sidebar()
 
-section_separator()
+        #RAW XLSX FILE
+        st.header('Data for subject: '+subject_name)
+        st.subheader(PAGE_SECTIONS[0])
+        st.write(uploaded_file)
 
-#CLUSTERING SECTION
-st.subheader(PAGE_SECTIONS[1])
-c1 = st.selectbox('Test 1 selection:',TEST_LIST,index=0,key=selectbox_unique_key())
-c2 = st.selectbox('Test 2 selection:',[x for x in TEST_LIST if x!=c1],key=selectbox_unique_key())
-section_gap()
-st.write('Viewing overall student performance for ***' + sheet_selection + ': ' + c1 + ' vs ' + c2+ '***')
-st.plotly_chart(getClustering(subject_dictionary[sheet_selection],c1,c2))
+        section_separator()
 
-section_separator()
+        #CLUSTERING SECTION
+        st.subheader(PAGE_SECTIONS[1])
+        c1 = st.selectbox('Test 1 selection:',TEST_LIST,index=0,key=selectbox_unique_key())
+        c2 = st.selectbox('Test 2 selection:',[x for x in TEST_LIST if x!=c1],key=selectbox_unique_key())
+        section_gap()
+        st.write('Viewing overall student performance for ***' + subject_name + ': ' + c1 + ' vs ' + c2+ '***')
+        st.plotly_chart(getClustering(uploaded_file,c1,c2))
 
-#INDIVIDUAL STUDENT ANALYSIS ON SUBJECT SECTION
-st.subheader(PAGE_SECTIONS[2])
-student_list = pd.read_excel(DATA_FILE,sheet_selection)[NAME_COLUMN]
-student_selection = st.selectbox('Select a student:',student_list,key=selectbox_unique_key())
-section_gap()
-st.subheader(student_selection + '\'s performance')
-st.plotly_chart(showStudentPerformance(student_selection))
+        section_separator()
 
-section_separator()
+        #INDIVIDUAL STUDENT ANALYSIS ON SUBJECT SECTION
+        st.subheader(PAGE_SECTIONS[2])
+        #student_list = pd.read_excel(uploaded_file,subject_name)[NAME_COLUMN]
+        student_list = uploaded_file[NAME_COLUMN]
+        student_selection = st.selectbox('Select a student:',student_list,key=selectbox_unique_key())
+        section_gap()
+        st.subheader(student_selection + '\'s performance')
+        st.plotly_chart(showStudentPerformance(uploaded_file,student_selection))
 
-#OVERALL STUDENT PERFORMANCE FOR SUBJECT ON A TEST TYPE SECTION
-st.subheader(PAGE_SECTIONS[3])
-test_selection = st.selectbox('Select a test type:',TEST_LIST,key=selectbox_unique_key())
-section_gap()
-st.write('Viewing overall student performance for ***'+ sheet_selection + ' ' + test_selection + '***')
-st.plotly_chart(Overallperformance(subject_dictionary[sheet_selection],test_selection))
+        section_separator()
 
-section_separator()
+        #OVERALL STUDENT PERFORMANCE FOR SUBJECT ON A TEST TYPE SECTION
+        st.subheader(PAGE_SECTIONS[3])
+        test_selection = st.selectbox('Select a test type:',TEST_LIST,key=selectbox_unique_key())
+        section_gap()
+        st.write('Viewing overall student performance for ***'+ subject_name + ' ' + test_selection + '***')
+        st.plotly_chart(Overallperformance(uploaded_file,test_selection))
 
-#Performance by class section
-st.subheader(PAGE_SECTIONS[4])
-class_test_selection = st.selectbox('Select a test type:',TEST_LIST,key=selectbox_unique_key())
-st.write('Viewing performance by class on ***'+ sheet_selection + ' ' + class_test_selection + '***')
-st.plotly_chart(performanceByClass(sheet_selection,class_test_selection))
+        section_separator()
 
-section_gap()
+        #Performance by class section
+        st.subheader(PAGE_SECTIONS[4])
+        class_test_selection = st.selectbox('Select a test type:',TEST_LIST,key=selectbox_unique_key())
+        st.write('Viewing performance by class on ***'+ subject_name + ' ' + class_test_selection + '***')
+        st.plotly_chart(performanceByClass(subject_name,class_test_selection))
+
+        section_gap()
 
 #BACK TO TOP
 st.write('[Back to top](#assessly-analysis)')

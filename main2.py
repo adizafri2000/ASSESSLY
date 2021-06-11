@@ -3,7 +3,7 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import openpyxl as pyxl
-from assesly import *
+from assesly_old import *
 
 #RE-OPEN TERMINAL IN VSCODE BY: CTRL + ` 
 
@@ -80,6 +80,7 @@ if uploaded_file is not None:
     if file_validator(uploaded_file):
         st.success('File is valid! Sheesh!')
         file_accepted = True
+        uploaded_file = load_data(uploaded_file)
     else:
         st.error('File invalid. Make sure column header names are follow expected format')
 
@@ -91,7 +92,7 @@ if file_accepted:
     subject_name = st.text_input('Enter name of subject')
     st.write(subject_name)
 
-    if subject_name is not '':
+    if subject_name != '' and len(subject_name.split())!=0:
         temp = subject_name
 
         section_gap()
@@ -109,17 +110,18 @@ if file_accepted:
         c2 = st.selectbox('Test 2 selection:',[x for x in TEST_LIST if x!=c1],key=selectbox_unique_key())
         section_gap()
         st.write('Viewing overall student performance for ***' + subject_name + ': ' + c1 + ' vs ' + c2+ '***')
-        st.plotly_chart(getClustering(subject_dictionary[subject_name],c1,c2))
+        st.plotly_chart(getClustering(uploaded_file,c1,c2))
 
         section_separator()
 
         #INDIVIDUAL STUDENT ANALYSIS ON SUBJECT SECTION
         st.subheader(PAGE_SECTIONS[2])
-        student_list = pd.read_excel(uploaded_file,subject_name)[NAME_COLUMN]
+        #student_list = pd.read_excel(uploaded_file,subject_name)[NAME_COLUMN]
+        student_list = uploaded_file[NAME_COLUMN]
         student_selection = st.selectbox('Select a student:',student_list,key=selectbox_unique_key())
         section_gap()
         st.subheader(student_selection + '\'s performance')
-        st.plotly_chart(showStudentPerformance(student_selection))
+        st.plotly_chart(showStudentPerformance(uploaded_file,student_selection))
 
         section_separator()
 
@@ -128,7 +130,7 @@ if file_accepted:
         test_selection = st.selectbox('Select a test type:',TEST_LIST,key=selectbox_unique_key())
         section_gap()
         st.write('Viewing overall student performance for ***'+ subject_name + ' ' + test_selection + '***')
-        st.plotly_chart(Overallperformance(subject_dictionary[subject_name],test_selection))
+        st.plotly_chart(Overallperformance(uploaded_file,test_selection))
 
         section_separator()
 

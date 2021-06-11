@@ -7,4 +7,4 @@ python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
 
 rem Run the streamlit website
-streamlit run main2.py
+streamlit run main.py

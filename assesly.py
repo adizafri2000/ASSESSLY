@@ -64,8 +64,8 @@ def getClustering(df,c1,c2):
 
 """# student performance individual"""
 
-def showStudentPerformance(name):
-  studentData = student_result_maths.loc[student_result_maths['Student Name']==name]
+def showStudentPerformance(subject, name):
+  studentData = subject.loc[subject['Student Name']==name]
 
   x = ['E1', 'E2', 'E3','Final']
   y = studentData.iloc[:,2:6].values.ravel()
@@ -86,5 +86,5 @@ def Overallperformance(subject, test):
 """# Performance by class"""
 
 def performanceByClass(subject, test):
-  figOverallbyClass = px.box(student_result_maths,x="Class", y=test, points="all",  boxmode="overlay", hover_data=["Student Name"],color="Class", title="Quiz"+" TEST RESULT")
+  figOverallbyClass = px.box(student_result_maths,x="Class", y=test, points="all",  boxmode="overlay", hover_data=["Student Name"],color="Class", title=test+" TEST RESULT")
   return figOverallbyClass
