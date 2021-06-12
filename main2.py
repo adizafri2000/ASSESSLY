@@ -124,11 +124,11 @@ if file_accepted:
 
         student_below_min, student_below_lower_quartile = getLowPerformanceStudent(uploaded_file,test_selection)
         shown_columns = [x for x in EXPECTED_FILE_HEADERS if x in EXPECTED_FILE_HEADERS[:2] or x==test_selection]
-        st.write('Students between Quartile 1 and Lower Fence:')
+        st.write('Students between Quartile 1 and Minimum:')
         st.write('*{} student{} in total.*'.format(len(student_below_lower_quartile),' ' if len(student_below_lower_quartile)==1 else 's'))
         st.write(student_below_lower_quartile[shown_columns])
         section_gap()
-        st.write('**Students Below Lower Fence:**')
+        st.write('**Students Below Minimum:**')
         st.write('*{} student{} in total.*'.format(len(student_below_min),' ' if len(student_below_min)==1 else 's'))
         st.write(student_below_min[shown_columns])
 
