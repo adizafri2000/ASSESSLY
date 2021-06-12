@@ -17,7 +17,6 @@ from sklearn.cluster import KMeans
 from sklearn.preprocessing import StandardScaler
 import plotly.graph_objects as go
 
-
 """# Clustering
 
 ## Clustering function
@@ -72,14 +71,6 @@ def Overallperformance(subject, test):
   figOverall = px.box(subject, y=test, points="all",  boxmode="overlay", hover_data=["Student Name"], title=((test+" TEST RESULT") if test != 'Attendance' else (test + ' RECORDS')))
   return figOverall
 
-"""# Performance by class"""
-
-def performanceByClass(subject, test):
-  figOverallbyClass = px.box(subject,x="Class", y=test, points="all",  boxmode="overlay", hover_data=["Student Name"],color="Class", title=((test+" TEST RESULT") if test != 'Attendance' else (test + ' RECORDS')))
-  return figOverallbyClass
-
-"""# Get low performance student"""
-
 def getLowPerformanceStudent(subject,test):
   median = np.median(subject[test])
   upper_quartile = np.percentile(subject[test], 75)
@@ -92,3 +83,46 @@ def getLowPerformanceStudent(subject,test):
   student_below_lower_quartile = subject.loc[(subject[test] >= lower_whisker) & (subject[test] <= lower_quartile)]
   
   return student_below_min, student_below_lower_quartile
+
+"""# Performance by class"""
+
+def performanceByClass(subject, test):
+  figOverallbyClass = px.box(subject,x="Class", y=test, points="all",  boxmode="overlay", hover_data=["Student Name"],color="Class", title=((test+" TEST RESULT") if test != 'Attendance' else (test + ' RECORDS')))
+  return figOverallbyClass
+
+# Get average by class
+def getAverageByClass(subject, test):
+  return subject.groupby('Class').mean()[test].reset_index()
+
+"""# Performance by Test"""
+def perFormancebyTest(subject):
+  fig = go.Figure()
+  col = ['E1','E2','E3']
+  for x in col:
+    fig.add_trace(go.Box(y=subject[x].values,  name=subject[x].name))
+    fig.update_layout( yaxis_title='Test Marks',)
+    fig.update_traces(boxpoints='all', jitter=0)
+  return fig
+
+# Get Average by test
+def getPerformancebyTest(subject):
+  E1avg = subject['E1'].mean()
+  E2avg = subject['E2'].mean()
+  E3avg = subject['E3'].mean()
+  E1min = subject['E1'].min()
+  E2min = subject['E2'].min()
+  E3min = subject['E3'].min()
+  E1max = subject['E1'].max()
+  E2max = subject['E2'].max()
+  E3max = subject['E3'].max()
+  testName = np.array(['E1','E2','E3'])
+  testTopic = np.array(['1','2,3','4'])
+  testAvg = np.array([E1avg,E2avg,E3avg])
+  testMin = np.array([E1min,E2min,E3min])
+  testMax = np.array([E1max,E2max,E3max])
+  df = pd.DataFrame(testName, columns = ['Test'])
+  df['Topics'] = testTopic.tolist()
+  df['Average'] = testAvg.tolist()
+  df['Min'] = testMin.tolist()
+  df['Max'] = testMax.tolist()
+  return df
