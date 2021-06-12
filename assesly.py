@@ -15,6 +15,8 @@ import pandas as pd
 from matplotlib import pyplot as plt
 from sklearn.cluster import KMeans
 from sklearn.preprocessing import StandardScaler
+import plotly.graph_objects as go
+
 
 """# Clustering
 
