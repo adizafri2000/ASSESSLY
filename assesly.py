@@ -86,7 +86,7 @@ def getLowPerformanceStudent(subject,test):
   upper_whisker = subject[test][subject[test]<=upper_quartile+1.5*iqr].max()
   lower_whisker = subject[test][subject[test]>=lower_quartile-1.5*iqr].min()
 
-  student_below_min = subject.loc[(subject[test] <= lower_whisker)]
-  student_below_lower_quartile = subject.loc[(subject[test] > lower_whisker) & (subject[test] <= lower_quartile)]
+  student_below_min = subject.loc[(subject[test] < lower_whisker)]
+  student_below_lower_quartile = subject.loc[(subject[test] >= lower_whisker) & (subject[test] <= lower_quartile)]
   
   return student_below_min, student_below_lower_quartile
