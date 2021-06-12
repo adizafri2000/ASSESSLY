@@ -67,11 +67,11 @@ def showStudentPerformance(subject, name):
 """# Overall"""
 
 def Overallperformance(subject, test):
-  figOverall = px.box(subject, y=test, points="all",  boxmode="overlay", hover_data=["Student Name"], title=test+" TEST RESULT")
+  figOverall = px.box(subject, y=test, points="all",  boxmode="overlay", hover_data=["Student Name"], title=((test+" TEST RESULT") if test != 'Attendance' else (test + ' RECORDS')))
   return figOverall
 
 """# Performance by class"""
 
 def performanceByClass(subject, test):
-  figOverallbyClass = px.box(subject,x="Class", y=test, points="all",  boxmode="overlay", hover_data=["Student Name"],color="Class", title=test+" TEST RESULT")
+  figOverallbyClass = px.box(subject,x="Class", y=test, points="all",  boxmode="overlay", hover_data=["Student Name"],color="Class", title=((test+" TEST RESULT") if test != 'Attendance' else (test + ' RECORDS')))
   return figOverallbyClass

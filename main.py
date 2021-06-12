@@ -14,7 +14,7 @@ EXPECTED_FILE_HEADERS = ['Student Name','Class','E1','E2','E3','Final','Quiz','A
 TEST_LIST = ['E1','E2','E3','Final','Quiz','Attendance']
 subject_name = ''
 PAGE_SECTIONS = [
-    subject_name + ' data',
+    'Received Data',
     'Student Performance on Test vs Test Comparison',
     'Analysis per Individual Student',
     'Overall Student Performance for Subject Tests',
@@ -34,7 +34,6 @@ def section_separator():
     st.write('---')
     section_gap()
     
-#@st.cache
 def load_data(file_selection):
     with st.spinner('Loading data ...'):
         data = pd.read_excel(file_selection)
@@ -61,8 +60,6 @@ def add_sidebar():
         sb.write('***['+PAGE_SECTIONS[i]+'](#'+anchor_link+')***')
     return sb
 
-
-
 # XLSX FILE UPLOAD SECTION : UNDER CONSTRUCTION AND CONSIDERATION !!
 st.subheader('Data file upload')
 st.info(
@@ -74,11 +71,11 @@ uploaded_file = st.file_uploader("Choose your student data file:",type='xlsx')
 file_accepted = False
 if uploaded_file is not None:
     if file_validator(uploaded_file):
-        st.success('File is valid! Sheesh!')
+        st.success('Uploaded file is validated by system.')
         file_accepted = True
         uploaded_file = load_data(uploaded_file)
     else:
-        st.error('File invalid. Make sure column header names are follow expected format')
+        st.error('File invalid. Make sure column header names are following expected format')
 
 if file_accepted:
 
@@ -99,11 +96,12 @@ if file_accepted:
 
         #CLUSTERING SECTION
         st.subheader(PAGE_SECTIONS[1])
-        c1 = st.selectbox('Test 1 selection:',TEST_LIST,index=0,key=selectbox_unique_key())
-        c2 = st.selectbox('Test 2 selection:',[x for x in TEST_LIST if x!=c1],key=selectbox_unique_key())
+        c1 = st.selectbox('Test 1/Attendance selection:',TEST_LIST,index=0,key=selectbox_unique_key())
+        c2 = st.selectbox('Test 2/Attendance selection:',[x for x in TEST_LIST if x!=c1],key=selectbox_unique_key())
         section_gap()
         st.write('Viewing overall student performance for ***' + subject_name + ': ' + c1 + ' vs ' + c2+ '***')
         st.plotly_chart(getClustering(uploaded_file,c1,c2))
+        st.write('Figure shows a chart, and this is the info thing.')
 
         section_separator()
 
@@ -115,23 +113,26 @@ if file_accepted:
         section_gap()
         st.subheader(student_selection + '\'s performance')
         st.plotly_chart(showStudentPerformance(uploaded_file,student_selection))
+        st.write('Figure shows a chart, and this is the info thing.')
 
         section_separator()
 
         #OVERALL STUDENT PERFORMANCE FOR SUBJECT ON A TEST TYPE SECTION
         st.subheader(PAGE_SECTIONS[3])
-        test_selection = st.selectbox('Select a test type:',TEST_LIST,key=selectbox_unique_key())
+        test_selection = st.selectbox('Select a test type or attendance record:',TEST_LIST,key=selectbox_unique_key())
         section_gap()
         st.write('Viewing overall student performance for ***'+ subject_name + ' ' + test_selection + '***')
         st.plotly_chart(Overallperformance(uploaded_file,test_selection))
+        st.write('Figure shows a chart, and this is the info thing.')
 
         section_separator()
 
         #Performance by class section
         st.subheader(PAGE_SECTIONS[4])
-        class_test_selection = st.selectbox('Select a test type:',TEST_LIST,key=selectbox_unique_key())
+        class_test_selection = st.selectbox('Select a test type or attendance record:',TEST_LIST,key=selectbox_unique_key())
         st.write('Viewing performance by class on ***'+ subject_name + ' ' + class_test_selection + '***')
         st.plotly_chart(performanceByClass(uploaded_file,class_test_selection))
+        st.write('Figure shows a chart, and this is the info thing.')
 
         section_gap()
 
