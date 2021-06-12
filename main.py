@@ -1,8 +1,6 @@
-import time
+from numpy import where
 import streamlit as st
 import pandas as pd
-import numpy as np
-import openpyxl as pyxl
 from assesly import *
 
 #RE-OPEN TERMINAL IN VSCODE BY: CTRL + ` 
@@ -34,6 +32,7 @@ def section_separator():
     st.write('---')
     section_gap()
     
+# Loads xlsx to data frame
 def load_data(file_selection):
     with st.spinner('Loading data ...'):
         data = pd.read_excel(file_selection)
@@ -82,9 +81,8 @@ if file_accepted:
     #SUBJECT NAME INPUT
     subject_name = st.text_input('Enter name of subject')
 
-    section_separator()
-
     if subject_name != '' and len(subject_name.split())!=0:
+        section_separator()
         add_sidebar()
 
         #RAW XLSX FILE
@@ -113,7 +111,7 @@ if file_accepted:
         section_gap()
         st.subheader(student_selection + '\'s performance')
         st.plotly_chart(showStudentPerformance(uploaded_file,student_selection))
-        st.write('Figure shows a chart, and this is the info thing.')
+        st.write('For the subject {}, this student scored yeah'.format(subject_name))
 
         section_separator()
 
@@ -123,7 +121,16 @@ if file_accepted:
         section_gap()
         st.write('Viewing overall student performance for ***'+ subject_name + ' ' + test_selection + '***')
         st.plotly_chart(Overallperformance(uploaded_file,test_selection))
-        st.write('Figure shows a chart, and this is the info thing.')
+
+        student_below_min, student_below_lower_quartile = getLowPerformanceStudent(uploaded_file,test_selection)
+        shown_columns = [x for x in EXPECTED_FILE_HEADERS if x in EXPECTED_FILE_HEADERS[:2] or x==test_selection]
+        st.write('Students between Quartile 1 and Minimum:')
+        st.write('*{} student{} in total.*'.format(len(student_below_lower_quartile),' ' if len(student_below_lower_quartile)==1 else 's'))
+        st.write(student_below_lower_quartile[shown_columns])
+        section_gap()
+        st.write('**Students Below Minimum:**')
+        st.write('*{} student{} in total.*'.format(len(student_below_min),' ' if len(student_below_min)==1 else 's'))
+        st.write(student_below_min[shown_columns])
 
         section_separator()
 
@@ -132,9 +139,9 @@ if file_accepted:
         class_test_selection = st.selectbox('Select a test type or attendance record:',TEST_LIST,key=selectbox_unique_key())
         st.write('Viewing performance by class on ***'+ subject_name + ' ' + class_test_selection + '***')
         st.plotly_chart(performanceByClass(uploaded_file,class_test_selection))
-        st.write('Figure shows a chart, and this is the info thing.')
 
         section_gap()
 
-#BACK TO TOP
-st.write('[Back to top](#assessly-analysis)')
+        #BACK TO TOP
+        st.write('[Back to top](#assessly-analysis)')
+
