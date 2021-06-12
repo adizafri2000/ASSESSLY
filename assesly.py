@@ -16,19 +16,6 @@ from matplotlib import pyplot as plt
 from sklearn.cluster import KMeans
 from sklearn.preprocessing import StandardScaler
 
-"""# Import data """
-
-# import data from xlsx to dataframe
-
-#student_result_maths = pd.read_excel (r'/content/StudentResult_Mathematics.xlsx')
-#student_result_science = pd.read_excel (r'/content/StudentResult_Science.xlsx')
-#student_result_sejarah = pd.read_excel (r'/content/StudentResult_Sejarah.xlsx')
-
-
-student_result_maths = pd.read_excel (r'content\StudentResult_Mathematics.xlsx')
-student_result_science = pd.read_excel (r'content\StudentResult_Science.xlsx')
-student_result_sejarah = pd.read_excel (r'content\StudentResult_Sejarah.xlsx')
-
 """# Clustering
 
 ## Clustering function
@@ -86,5 +73,5 @@ def Overallperformance(subject, test):
 """# Performance by class"""
 
 def performanceByClass(subject, test):
-  figOverallbyClass = px.box(student_result_maths,x="Class", y=test, points="all",  boxmode="overlay", hover_data=["Student Name"],color="Class", title=test+" TEST RESULT")
+  figOverallbyClass = px.box(subject,x="Class", y=test, points="all",  boxmode="overlay", hover_data=["Student Name"],color="Class", title=test+" TEST RESULT")
   return figOverallbyClass

@@ -9,23 +9,17 @@ from assesly import *
 
 st.title('ASSESSLY Analysis')
 
-#DATA_FILE = 'Book1.xlsx'
 NAME_COLUMN = 'Student Name'
-subject_dictionary = {
-    'Mathematics' : student_result_maths,
-    'Science': student_result_science,
-    'Sejarah': student_result_sejarah 
-}
 EXPECTED_FILE_HEADERS = ['Student Name','Class','E1','E2','E3','Final','Quiz','Attendance']
 TEST_LIST = ['E1','E2','E3','Final','Quiz','Attendance']
+subject_name = ''
 PAGE_SECTIONS = [
-    'Extracted raw data',
+    subject_name + ' data',
     'Student Performance on Test vs Test Comparison',
     'Analysis per Individual Student',
     'Overall Student Performance for Subject Tests',
     'Performance by Class'
 ]
-subject_name = ''
 
 #Counter for streamlit selectbox widget to assign its unique key to avoid DuplicateWidgetID error
 selectbox_count = 0
@@ -137,7 +131,7 @@ if file_accepted:
         st.subheader(PAGE_SECTIONS[4])
         class_test_selection = st.selectbox('Select a test type:',TEST_LIST,key=selectbox_unique_key())
         st.write('Viewing performance by class on ***'+ subject_name + ' ' + class_test_selection + '***')
-        st.plotly_chart(performanceByClass(subject_name,class_test_selection))
+        st.plotly_chart(performanceByClass(uploaded_file,class_test_selection))
 
         section_gap()
 
