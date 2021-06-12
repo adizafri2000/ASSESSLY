@@ -75,3 +75,18 @@ def Overallperformance(subject, test):
 def performanceByClass(subject, test):
   figOverallbyClass = px.box(subject,x="Class", y=test, points="all",  boxmode="overlay", hover_data=["Student Name"],color="Class", title=((test+" TEST RESULT") if test != 'Attendance' else (test + ' RECORDS')))
   return figOverallbyClass
+
+"""# Get low performance student"""
+
+def getLowPerformanceStudent(subject,test):
+  median = np.median(subject[test])
+  upper_quartile = np.percentile(subject[test], 75)
+  lower_quartile = np.percentile(subject[test], 25)
+  iqr = upper_quartile - lower_quartile
+  upper_whisker = subject[test][subject[test]<=upper_quartile+1.5*iqr].max()
+  lower_whisker = subject[test][subject[test]>=lower_quartile-1.5*iqr].min()
+
+  student_below_min = subject.loc[(subject[test] <= lower_whisker)]
+  student_below_lower_quartile = subject.loc[(subject[test] > lower_whisker) & (subject[test] <= lower_quartile)]
+  
+  return student_below_min, student_below_lower_quartile
